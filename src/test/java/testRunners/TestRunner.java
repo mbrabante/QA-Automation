@@ -1,4 +1,4 @@
-package CucumberTest;
+package testRunners;
 
 import org.junit.runner.RunWith;
 import cucumber.api.CucumberOptions;

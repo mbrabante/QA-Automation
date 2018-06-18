@@ -19,6 +19,7 @@ import pageObjects.Admin_CreateBrandPage;
 import pageObjects.Admin_LoginPage;
 import pageObjects.Admin_MainMenu;
 import pageObjects.Admin_BrandsPage;
+import helperMethods.Utilities;
 
 public class CreateBrand extends WebDriver_Setup {
 	
@@ -63,7 +64,7 @@ public class CreateBrand extends WebDriver_Setup {
 		
 		//Enter new Brand Name
 		createBrand.fillBrandDetails();
-	    
+		
 		//Click Save button
 		createBrand.click_SaveBrand();
 	}
@@ -71,6 +72,7 @@ public class CreateBrand extends WebDriver_Setup {
 	@Then("^New brand is successfully created$")
 	public void new_brand_is_successfully_created() throws Throwable {
 		Admin_CreateBrandPage createBrand = new Admin_CreateBrandPage(driver);
+		
 		Thread.sleep(1000);
 		
 		//Verify confirmation message
@@ -86,10 +88,14 @@ public class CreateBrand extends WebDriver_Setup {
 	public void added_to_the_Brand_list() throws Throwable {
 		Admin_BrandsPage brandsPage = new Admin_BrandsPage(driver);
 		Admin_CreateBrandPage createBrand = new Admin_CreateBrandPage(driver);
+		
 		String table = brandsPage.get_BrandTableContent();
 		String bname = createBrand.get_BrandName();
 		System.out.print(bname);
+		System.out.print("test");
 		Assert.assertTrue(table.contains(bname));
+		
+		Utilities.captureScreenshot(driver, "CBTC001_Created New Brand");
 		
 	}
 	

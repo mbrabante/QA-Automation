@@ -49,7 +49,7 @@ public class EditBrand extends WebDriver_Setup{
 		cb.fillBrandDetails();
 		cb.click_SaveBrand();
 		brand = cb.get_BrandName();
-		System.out.print(brand);
+		
 		cb.click_OKMessage();
 	    
 		
