@@ -6,8 +6,8 @@ import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-features = "Feature/Brand/CreateBrand.feature",
-glue={"stepDefinition/Brand"}
+features = "Feature/Catalog/Brand/CreateBrand.feature",
+glue={"stepDefinition"}
 )
 
 public class TestRunner {

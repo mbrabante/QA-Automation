@@ -7,11 +7,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
+import managers.FileReaderManager;
 
 public class Admin_LoginPage {
-
 	WebDriver driver;
-
+	
 	public Admin_LoginPage(WebDriver driver) {
 		this.driver = driver;
 	    PageFactory.initElements(driver, this);
@@ -27,8 +27,7 @@ public class Admin_LoginPage {
 	private WebElement btn_Login;
 	
 	public void navigateTo_LoginPage() {
-		driver.manage().window().maximize();
-		driver.get("http://demo-admin.ascentisecommerce.com/");
+		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
 	}
 	
 	public void enter_UserName(String UName) {

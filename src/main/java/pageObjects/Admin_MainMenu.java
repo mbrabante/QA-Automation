@@ -17,6 +17,7 @@ public class Admin_MainMenu {
 	WebDriver driver;
 	
 	public Admin_MainMenu(WebDriver driver) {
+		this.driver = driver;
 	    PageFactory.initElements(driver, this);
 	}
 	
