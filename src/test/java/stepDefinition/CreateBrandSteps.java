@@ -5,9 +5,6 @@ package stepDefinition;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-
-
-
 import org.junit.Assert;
 import pageObjects.Admin_CreateBrandPage;
 import pageObjects.Admin_LoginPage;
@@ -17,6 +14,8 @@ import helperMethods.Utilities;
 import managers.Admin_PageObjectManager;
 import managers.WebDriverManager;
 import org.openqa.selenium.WebDriver;
+import managers.FileReaderManager;
+import testDataTypes.Brand;	
 
 
 
@@ -29,6 +28,7 @@ public class CreateBrandSteps {
 	Admin_CreateBrandPage createBrandPage;
 	Admin_PageObjectManager pageObjectManager;
 	WebDriverManager webDriverManager;
+	
 	
 	@Given("^Navigate to Brand page$")
 	public void navigate_to_Brand_page() throws Throwable {
@@ -52,15 +52,13 @@ public class CreateBrandSteps {
 		//Click Create a New Brand button
 		brandsPage.click_CreateBrand();  
 	}
-
-	@When("^Enter valid Brand details$")
-	public void enter_valid_Brand_details() throws Throwable {
+	
+	@When("^Enter valid \"([^\"]*)\" details$")
+	public void enter_valid_details(String brandName) throws Throwable {
+		Brand brand = FileReaderManager.getInstance().getJsonReader().getBrandByName(brandName);
 		createBrandPage = pageObjectManager.getCreateBrandPage();
 
-		//Enter valid Brand details
-		createBrandPage.fillBrandDetails();
-		
-		
+		createBrandPage.fillBrandDetails(brand);
 	}
 	
 	@When("^Click on Save button$")
@@ -90,7 +88,7 @@ public class CreateBrandSteps {
 		String table = brandsPage.get_BrandTableContent();
 		Assert.assertTrue(table.contains("1QABRAND"));
 		
-		Utilities.captureScreenshot(driver, "CBTC001_Created New Brand");
+		Utilities.captureScreenshot(driver, "CBTC001_Created New Brand1");
 		
 		webDriverManager.closeDriver();
 		

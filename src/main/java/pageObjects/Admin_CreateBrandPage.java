@@ -10,6 +10,8 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import testDataTypes.Brand;
+
 import java.util.List;
 import org.openqa.selenium.By;
 
@@ -132,11 +134,11 @@ public class Admin_CreateBrandPage {
 		btn_Back.click();
 	}
 	
-	public void fillBrandDetails() {
-		enter_BrandName("3QABRAND");
-		enter_BrandImage("C:\\Users\\Staff - QA\\Pictures\\qabrandimg.jpg");
-		enter_PublishToDate("Dec", "31", "2020");
-		enter_PublishFromDate("Jan", "1", "2018");
+	public void fillBrandDetails(Brand brand) {
+		enter_BrandName(brand.brandName);
+		enter_BrandImage(brand.brandImage);
+		enter_PublishToDate(brand.publishToDate.toMonth, brand.publishToDate.toDay, brand.publishToDate.toYear);
+		enter_PublishFromDate(brand.publishFromDate.fromMonth, brand.publishFromDate.fromDay, brand.publishFromDate.fromYear);
 
 	}
 	
@@ -156,9 +158,11 @@ public class Admin_CreateBrandPage {
 		return msgbx_AfterClickSave.getText();
 	}
 	
+	/*
 	public void createNewBrand() throws InterruptedException {
-		fillBrandDetails();
+		fillBrandDetails(brand);
 		click_SaveBrand();
 		click_OKMessage();
 	}
+	*/
 }

@@ -1,0 +1,19 @@
+[	
+	{
+		"brandName": "1QABRAND",
+		"displayName": "",
+		"brandCode": "",
+		"brandImage": "C:\\Users\\Staff - QA\\Pictures\\qabrandimg.jpg",
+		"publishFromDate": {
+			"fromMonth": "Jan",
+			"fromDay": "1",
+			"fromYear": "2018"
+		},
+		"publishToDate": {
+			"toMonth": "Dec",
+			"toDay": "31",
+			"toYear": "2019"
+		}
+	}
+]	
+   
