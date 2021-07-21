@@ -1,0 +1,949 @@
+{
+	"info": {
+		"_postman_id": "aed23de7-4cb6-48d3-902b-9c4ad054b9a3",
+		"name": "CRM SMOKE TEST - CRM - PROD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "OAuth API",
+			"item": [
+				{
+					"name": "Authentication (Identity Server)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Get JSON Data from response",
+									"var jsonData = pm.response.json();",
+									"console.log(jsonData);",
+									"",
+									"// Set Environment Variables",
+									"pm.environment.set(\"access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "grant_type=client_credentials&scope=crmapi&client_id={{db}}\\{{user_string}}&client_secret={{pwd_string}}"
+						},
+						"url": {
+							"raw": "{{auth_url}}",
+							"host": [
+								"{{auth_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Service Available",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Get JSON Data from response",
+									"var jsonData = pm.response.json();",
+									"console.log(jsonData);",
+									"",
+									"// Assertions",
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(jsonData.ReturnStatus).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(jsonData.ReturnMessage).to.equal(\"SUCCESS\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{access_token}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Command\": \"SERVICE AVAILABLE\",\n\t\"DB\": \"{{db}}\",\n\t\"EnquiryCode\": \"{{enquiryCode}}\",\n\t\"OutletCode\": \"{{outletCode}}\",\n\t\"PosID\": \"{{posID}}\",\n\t\"CashierID\": \"{{cashierID}}\",\n    \"IgnoreCCNchecking\": \"false\"\n}"
+						},
+						"url": {
+							"raw": "{{url_wrapper}}",
+							"host": [
+								"{{url_wrapper}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Member Enquiry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Get JSON Data from response",
+									"var jsonData = pm.response.json();",
+									"console.log(jsonData);",
+									"",
+									"// Assertions",
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(jsonData.ReturnStatus).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(jsonData.ReturnMessage).to.equal(\"SUCCESS\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{access_token}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Command\": \"MEMBER ENQUIRY\",\r\n\t\"DB\": \"{{db}}\",\r\n\t\"EnquiryCode\": \"POS\",\r\n\t\"OutletCode\": \"HQ\",\r\n\t\"PosID\": \"POS0001\",\r\n\t\"CashierID\": \"Cashier0001\",\r\n\t\"IgnoreCCNchecking\": false,\r\n\t\"NRIC\": \"\",\r\n\t\"Nationality\": \"\",\r\n\t\"Passport\": \"\",\r\n\t\"MobileNo\": \"\",\r\n\t\"Email\": \"\",\r\n\t\"MemberID\": \"{{memberID}}\",\r\n\t\"FilterCardsByStatus\": \"\",\r\n\t\"RequestDynamicColumnLists\": [\r\n\t],\r\n\t\"RequestDynamicFieldLists\": [\r\n\t\t{\"Name\":\"FirstName\"},\r\n\t\t{\"Name\":\"LastName\"},\r\n\t],\r\n\t\"RetrieveBase64ImageString\": false,\r\n\t\"RetrievePtsToNextTier\": false,\r\n\t\"RetrieveNettToNextTier\": false,\r\n\t\"RetrieveJournalList\": true,\r\n\t\"JournalfilterBy_Type\": \"\",\r\n\t\"MobileNoExactSearch\": false\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url_wrapper}}",
+							"host": [
+								"{{url_wrapper}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Epoch to Date Conversion function",
+							"//function convertToEpoch(date) {",
+							"   //var resultDate = new Date(date);",
+							"   //return resultDate.getTime();",
+							"//}",
+							"",
+							"// Get datetime",
+							"//var moment = require('moment')",
+							"//var timestamp_full_e = convertToEpoch(moment().format('YYYY-MM-DD'));",
+							"//var timestamp_past_e = convertToEpoch(moment().subtract(5,'d').format('YYYY-MM-DD'));",
+							"//var timestamp_future_e = convertToEpoch(moment().add(5,'d').format('YYYY-MM-DD'));",
+							"//pm.environment.set(\"timestamp_full_e\",timestamp_full_e);",
+							"//pm.environment.set(\"timestamp_past_e\",timestamp_past_e);",
+							"//pm.environment.set(\"timestamp_future_e\",timestamp_future_e);"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Matrix API",
+			"item": [
+				{
+					"name": "01 Service Available",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Service Available Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"value": "http://MatrixAPIs/XMLCommand",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n<RequestXML  xmlns=\"GenericVO.ServiceAvailable\">\r\n  <Command>SERVICE AVAILABLE</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>POS</EnquiryCode>\r\n  <OutletCode>HQ</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>false</IgnoreCCNchecking>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "01-A Service Available XMLCommand2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"enquiryCode = data.enquiryCode",
+									"pm.environment.set(\"enquiryCode\", enquiryCode);",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"client = data.enquiryCode",
+									"",
+									"pm.test(\"RapidCRM \" + client + \" - Service Available Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"value": "http://MatrixAPIs/XMLCommand2",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand2>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n<RequestXML  xmlns=\"GenericVO.ServiceAvailable\">\r\n  <Command>SERVICE AVAILABLE</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>{{enquiryCode}}</EnquiryCode>\r\n  <OutletCode>{{enquiryCode}}</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>false</IgnoreCCNchecking>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand2>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "02 Member Enquiry",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Set response values",
+									"let cardNo =  parse.find('CardNo').first().text();",
+									"",
+									"pm.environment.set(\"cardNo\", cardNo);",
+									"",
+									"pm.test(\"Member Enquiry Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"value": "http://MatrixAPIs/XMLCommand",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n<RequestXML  xmlns=\"GenericVO.MemberEnquiry\">\r\n  <Command>MEMBER ENQUIRY</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>POS</EnquiryCode>\r\n  <OutletCode>HQ</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>true</IgnoreCCNchecking>\r\n  <NRIC></NRIC>\r\n  <Nationality></Nationality>\r\n  <Passport></Passport>\r\n  <MobileNo></MobileNo>\r\n  <Email></Email>\r\n  <MemberID>{{memberID}}</MemberID>\r\n  <FilterCardsByStatus />\r\n  <RequestDynamicColumnLists>\r\n    <DynamicColumn Name=\"ColumnName\" />\r\n  </RequestDynamicColumnLists>\r\n  <RequestDynamicFieldLists>\r\n    <DynamicField Name=\"AdditionalInfo\" />\r\n  </RequestDynamicFieldLists>\r\n  <RetrieveBase64ImageString>false</RetrieveBase64ImageString>\r\n  <RetrievePtsToNextTier>false</RetrievePtsToNextTier>\r\n  <RetrieveNettToNextTier>false</RetrieveNettToNextTier>\r\n  <RetrieveJournalList>false</RetrieveJournalList>\r\n  <JournalfilterBy_Type />\r\n  <MobileNoExactSearch>false</MobileNoExactSearch>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "03 Card Enquiry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"cardNo = pm.environment.get(\"cardNo\")",
+									"",
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"SUCCESS\");",
+									"});",
+									"",
+									"pm.test(\"CardNo is correct\", function () {",
+									"    pm.expect(parse.find('CardNo').first().text()).to.equal(cardNo);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"value": "http://MatrixAPIs/XMLCommand",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n<RequestXML  xmlns=\"GenericVO.CardEnquiry\">\r\n  <Command>CARD ENQUIRY</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>POS</EnquiryCode>\r\n  <OutletCode>HQ</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>false</IgnoreCCNchecking>\r\n  <MemberID />\r\n  <CardNo>{{cardNo}}</CardNo>\r\n  <CVC />\r\n  <SVCurrency></SVCurrency>\r\n  <RetrieveMembershipInfo>false</RetrieveMembershipInfo>\r\n  <RetrieveActiveVouchersList>false</RetrieveActiveVouchersList>\r\n  <FilterBy_VoucherNo />\r\n  <FilterBy_VoucherType />\r\n  <FilterBy_VoucherTypeType />\r\n  <FilterBy_ValidFrom />\r\n  <FilterBy_ValidTo />\r\n  <FilterBy_TriggerSource />\r\n  <SortOrder>ASC</SortOrder>\r\n  <SortBy_VoucherNo>false</SortBy_VoucherNo>\r\n  <SortBy_VoucherType>false</SortBy_VoucherType>\r\n  <SortBy_ValidFrom>false</SortBy_ValidFrom>\r\n  <SortBy_ValidTo>false</SortBy_ValidTo>\r\n  <PageNumber>1</PageNumber>\r\n  <PageCount>99</PageCount>\r\n  <RetrieveReceiptMessage>false</RetrieveReceiptMessage>\r\n  <RetrievePtsToNextTier>false</RetrievePtsToNextTier>\r\n  <RetrieveNettToNextTier>false</RetrieveNettToNextTier>\r\n  <RetrieveJournalList>false</RetrieveJournalList>\r\n  <JournalfilterBy_Type />\r\n  <RetrieveCVCInfo>false</RetrieveCVCInfo>\r\n  <RequestDynamicColumnLists />\r\n  <RequestDynamicFieldLists />\r\n  <RetrieveRedeemableVoucher>false</RetrieveRedeemableVoucher>\r\n  <RetrieveCarparkInfo>false</RetrieveCarparkInfo>\r\n  <RetrieveEligibleFlag>false</RetrieveEligibleFlag>\r\n  <RetrieveVoucherSummary>false</RetrieveVoucherSummary>\r\n  <OnlyActiveVoucherSummary>false</OnlyActiveVoucherSummary>\r\n  <GroupByValidityNVoucherType>false</GroupByValidityNVoucherType>\r\n  <GroupByVoucherType>false</GroupByVoucherType>\r\n  <GroupByExpiryDateNVoucherType>false</GroupByExpiryDateNVoucherType>\r\n  <PageNumber_VoucherSummary>1</PageNumber_VoucherSummary>\r\n  <PageCount_VoucherSummary>99</PageCount_VoucherSummary>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "04 Update Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let rnum = pm.environment.get(\"rnum\");",
+									"month_day = pm.environment.get(\"month_day\");",
+									"",
+									"//name = 'Smoke Test ' + rnum;",
+									"dob = '1999-' + month_day + 'T00:00:00';",
+									"//mobile = '81' + rnum;",
+									"",
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"SUCCESS\");",
+									"});",
+									"",
+									"pm.test(\"Name is correct\", function () {",
+									"   pm.expect(parse.find('Name').first().text()).to.equal(\"Smoke Test \"+rnum);",
+									"});",
+									"",
+									"pm.test(\"DOB is correct\", function () {",
+									"    pm.expect(parse.find('DOB').first().text()).to.equal(dob);",
+									"});",
+									"",
+									"pm.test(\"Mobile is correct\", function () {",
+									"    pm.expect(parse.find('MobileNo').first().text()).to.equal(\"81\"+rnum);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random number\r",
+									"function makernum(length) {\r",
+									"   var num           = '';\r",
+									"   var numbers       = '0123456789';\r",
+									"   var numbersLength = numbers.length;\r",
+									"   for ( var i = 0; i < length; i++ ) {\r",
+									"      num += numbers.charAt(Math.floor(Math.random() * numbersLength));\r",
+									"   }\r",
+									"   return num;\r",
+									"}\r",
+									"\r",
+									"var rnum = makernum(7);\r",
+									"console.log(rnum);\r",
+									"pm.environment.set(\"rnum\", rnum);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"type": "text",
+								"value": "http://MatrixAPIs/XMLCommand"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n<RequestXML  xmlns=\"GenericVO.UpdateProfile\">\r\n  <Command>UPDATE PROFILE</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>POS</EnquiryCode>\r\n  <OutletCode>HQ</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>false</IgnoreCCNchecking>\r\n  <FilterByMemberID>{{memberID}}</FilterByMemberID>\r\n  <Name>Smoke Test {{rnum}}</Name>\r\n  <DOB>1999-{{month_day}}T00:00:00.000</DOB>\r\n  <Nationality />\r\n  <Block>01</Block>\r\n  <Level>08</Level>\r\n  <Unit>23</Unit>\r\n  <Street>Street aa</Street>\r\n  <Building />\r\n  <PostalCode>123456</PostalCode>\r\n  <Country>SG</Country>\r\n  <Address1 />\r\n  <Address2 />\r\n  <Address3 />\r\n  <ContactNo></ContactNo>\r\n  <MobileNo>81{{rnum}}</MobileNo>\r\n  <FaxNo></FaxNo>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "05 Sales",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"SUCCESS\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require('moment')",
+									"var transTime = moment().format('HH:mm:ss');",
+									"pm.environment.set(\"transtime\", transTime);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"type": "text",
+								"value": "http://MatrixAPIs/XMLCommand"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n<RequestXML  xmlns=\"GenericVO.Sales\">\r\n  <Command>SALES</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>POS</EnquiryCode>\r\n  <OutletCode>HQ</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>false</IgnoreCCNchecking>\r\n  <IsOffline>false</IsOffline>\r\n  <CardNo>{{cardNo}}</CardNo>\r\n  <CVC />\r\n  <ReceiptNo>{{receiptNo}}</ReceiptNo>\r\n  <TransactDate>{{timestamp}}</TransactDate>\r\n  <TransactTime>{{transtime}}</TransactTime>\r\n  <OriginalTime />\r\n  <SalesAmt>100</SalesAmt>\r\n  <SalesAmtToCalculatePoints>100</SalesAmtToCalculatePoints>\r\n  <SalesAmtToCalculateAR>0</SalesAmtToCalculateAR>\r\n  <TierCodeToAwardPoints />\r\n  <PointsToBeAwarded />\r\n  <RunCampaign>true</RunCampaign>\r\n  <CampaignType>Sales Campaign</CampaignType>\r\n  <CampaignCode></CampaignCode>\r\n  <CheckQualificationRules>true</CheckQualificationRules>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "06 Void Sales",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"SUCCESS\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require('moment')\r",
+									"var transTime = moment().format('HH:mm:ss');\r",
+									"pm.environment.set(\"transtime\", transTime);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"type": "text",
+								"value": "http://MatrixAPIs/XMLCommand"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "text/xml; charset=utf-8"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:mat=\"http://MatrixAPIs/\">\r\n   <soap:Header>\r\n      <mat:SOAPAuthHeader>\r\n         <!--Optional:-->\r\n         <mat:strUserName>{{user_b64}}</mat:strUserName>\r\n         <!--Optional:-->\r\n         <mat:strPassword>{{pwd_b64}}</mat:strPassword>\r\n      </mat:SOAPAuthHeader>\r\n   </soap:Header>\r\n   <soap:Body>\r\n      <mat:XMLCommand>\r\n         <!--Optional:-->\r\n         <mat:requestXML><![CDATA[\r\n\r\n<RequestXML  xmlns=\"GenericVO.Voiding\">\r\n  <Command>VOIDING</Command>\r\n  <DB>{{db}}</DB>\r\n  <EnquiryCode>POS</EnquiryCode>\r\n  <OutletCode>HQ</OutletCode>\r\n  <PosID>POS0001</PosID>\r\n  <CashierID>Cashier0001</CashierID>\r\n  <IgnoreCCNchecking>true</IgnoreCCNchecking>\r\n  <CardNo>{{cardNo}}</CardNo>\r\n  <OriginalReceiptNo>{{receiptNo}}</OriginalReceiptNo>\r\n  <OriginalOutletCode>HQ</OriginalOutletCode>\r\n  <OriginalTransactDate>{{timestamp}}</OriginalTransactDate>\r\n  <OriginalPOSID />\r\n  <VoidTransactionType>SALES</VoidTransactionType>\r\n  <TransactRefID />\r\n  <TransactAutoID />\r\n  <TransactDate>{{timestamp}}</TransactDate>\r\n  <TransactTime>{{transtime}}</TransactTime>\r\n  <Remarks />\r\n  <RetrieveMembershipInfo>true</RetrieveMembershipInfo>\r\n  <RetrieveActiveVouchersList>false</RetrieveActiveVouchersList>\r\n  <CampaignType>Sales Campaign</CampaignType>\r\n  <CampaignCode></CampaignCode>\r\n  <CheckQualificationRules>true</CheckQualificationRules>\r\n</RequestXML>\r\n]]></mat:requestXML>\r\n      </mat:XMLCommand>\r\n   </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url}}",
+							"host": [
+								"{{url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "07 SV Balance Enquiry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Cleanup response text",
+									"var responsexml = pm.response.text().replace(/&gt;/g,\">\").replace(/&lt;/g,\"<\");",
+									"console.log(responsexml);",
+									"parse = cheerio(responsexml);",
+									"",
+									"// Assertions",
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"SUCCESS\");",
+									"});",
+									"",
+									"//pm.test(\"StoredValueBalance is '15.0000'\", function () {",
+									"//    pm.expect(parse.find('StoredValueBalance').text()).to.equal(\"15.0000\");",
+									"//});",
+									"",
+									"//pm.test(\"Return Status is 31\", function () {",
+									"//    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"31\");",
+									"//});",
+									"",
+									"//pm.test(\"Return Message is 'CARDNO NOT FOUND'\", function () {",
+									"//    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"CARDNO NOT FOUND\");",
+									"//});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Get Environment Variables",
+									"//let db = pm.environment.get(\"db\");",
+									"db = data.db",
+									"svcurrency = data.svcurrency",
+									"let cardno = pm.environment.get(\"cardNo\");",
+									"",
+									"var reqToEncode = `<SVMessage xmlns=\"GenericVO.SVBalanceEnquiry\">",
+									"  <TraceID></TraceID>",
+									"  <Command>SV BALANCE ENQUIRY</Command>",
+									"  <DB>${db}</DB>",
+									"  <EnquiryCode>POS</EnquiryCode>",
+									"  <OutletCode>HQ</OutletCode>",
+									"  <PosID>POS0001</PosID>",
+									"  <CashierID>Cashier0001</CashierID>",
+									"  <IgnoreCCNchecking>true</IgnoreCCNchecking>",
+									"  <CardNo>${cardno}</CardNo>",
+									"  <CVC />",
+									"  <SVCurrency>${svcurrency}</SVCurrency>",
+									"  <RetrieveCVCInfo>false</RetrieveCVCInfo>",
+									"</SVMessage>`",
+									"",
+									"var crc32 = function (r) {",
+									"    for (var a,o=[],c=0;c<256;c++) {",
+									"        a=c;",
+									"        for(var f=0;f<8;f++)",
+									"        a=1&a?3988292384^a>>>1:a>>>1;",
+									"        o[c]=a",
+									"    }",
+									"    ",
+									"    for(var n=-1,t=0;t<r.length;t++)",
+									"    n=n>>>8^o[255&(n^r.charCodeAt(t))];",
+									"    return(-1^n)>>>0",
+									"};",
+									"",
+									"checkSum = crc32(reqToEncode).toString(16).toUpperCase(); //hex",
+									"console.log(checkSum);",
+									"",
+									"pm.environment.set(\"reqToEncode\", reqToEncode);",
+									"pm.environment.set(\"checkSum\", checkSum);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SOAPAction",
+								"value": "http://MatrixSVAPIs/XMLCommand",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/xml; charset=utf-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Header>\r\n    <SOAPAuthHeader xmlns=\"http://MatrixSVAPIs/\">\r\n      <strUserName>{{user_b64}}</strUserName>\r\n      <strPassword>{{pwd_b64}}</strPassword>\r\n    </SOAPAuthHeader>\r\n  </soap:Header>\r\n  <soap:Body>\r\n  \t<XMLCommand xmlns=\"http://MatrixSVAPIs/\">\r\n      <requestXML><![CDATA[{{reqToEncode}}]]></requestXML>\r\n      <chkSum>{{checkSum}}</chkSum>\r\n    </XMLCommand>\r\n  </soap:Body>\r\n</soap:Envelope>"
+						},
+						"url": {
+							"raw": "{{url_sv}}",
+							"host": [
+								"{{url_sv}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "08 SV Card Enquiry",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Get Environment Variables\r",
+									"//let db = pm.environment.get(\"db\");\r",
+									"db = data.db\r",
+									"svcurrency = data.svcurrency\r",
+									"let cardno = pm.environment.get(\"cardNo\");\r",
+									"\r",
+									"var reqToEncode = `<SVMessage xmlns=\"GenericVO.SVCardEnquiry\">\r",
+									"  <TraceID />\r",
+									"  <Command>SV CARD ENQUIRY</Command>\r",
+									"  <DB>${db}</DB>\r",
+									"  <EnquiryCode>POS</EnquiryCode>\r",
+									"  <OutletCode>HQ</OutletCode>\r",
+									"  <PosID>POS0001</PosID>\r",
+									"  <CashierID>Cashier0001</CashierID>\r",
+									"  <IgnoreCCNchecking>true</IgnoreCCNchecking>\r",
+									"  <MemberID />\r",
+									"  <CardNo>${cardno}</CardNo>\r",
+									"  <CVC />\r",
+									"  <SVCurrency>${svcurrency}</SVCurrency>\r",
+									"  <RetrieveMembershipInfo>true</RetrieveMembershipInfo>\r",
+									"  <RetrieveActiveVouchersList>true</RetrieveActiveVouchersList>\r",
+									"  <FilterBy_VoucherNo />\r",
+									"  <FilterBy_VoucherType />\r",
+									"  <FilterBy_ValidFrom />\r",
+									"  <FilterBy_ValidTo />\r",
+									"  <FilterBy_TriggerSource />\r",
+									"  <SortOrder>ASC</SortOrder>\r",
+									"  <SortBy_VoucherNo>false</SortBy_VoucherNo>\r",
+									"  <SortBy_VoucherType>false</SortBy_VoucherType>\r",
+									"  <SortBy_ValidFrom>false</SortBy_ValidFrom>\r",
+									"  <SortBy_ValidTo>true</SortBy_ValidTo>\r",
+									"  <PageNumber>1</PageNumber>\r",
+									"  <PageCount>99</PageCount>\r",
+									"  <RetrieveReceiptMessage>true</RetrieveReceiptMessage>\r",
+									"  <RetrievePtsToNextTier>true</RetrievePtsToNextTier>\r",
+									"  <RetrieveNettToNextTier>true</RetrieveNettToNextTier>\r",
+									"  <RetrieveJournalList>true</RetrieveJournalList>\r",
+									"  <JournalfilterBy_Type />\r",
+									"  <RetrieveCVCInfo>false</RetrieveCVCInfo>\r",
+									"</SVMessage>`\r",
+									"\r",
+									"var crc32 = function (r) {\r",
+									"    for (var a,o=[],c=0;c<256;c++) {\r",
+									"        a=c;\r",
+									"        for(var f=0;f<8;f++)\r",
+									"        a=1&a?3988292384^a>>>1:a>>>1;\r",
+									"        o[c]=a\r",
+									"    }\r",
+									"    \r",
+									"    for(var n=-1,t=0;t<r.length;t++)\r",
+									"    n=n>>>8^o[255&(n^r.charCodeAt(t))];\r",
+									"    return(-1^n)>>>0\r",
+									"};\r",
+									"\r",
+									"checkSum = crc32(reqToEncode).toString(16).toUpperCase(); //hex\r",
+									"console.log(checkSum);\r",
+									"\r",
+									"pm.environment.set(\"reqToEncode\", reqToEncode);\r",
+									"pm.environment.set(\"checkSum\", checkSum);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Cleanup response text",
+									"var responsexml = pm.response.text().replace(/&gt;/g,\">\").replace(/&lt;/g,\"<\");",
+									"console.log(responsexml);",
+									"parse = cheerio(responsexml);",
+									"",
+									"// Assertions",
+									"pm.test(\"Return Status is 1\", function () {",
+									"    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"1\");",
+									"});",
+									"",
+									"pm.test(\"Return Message is 'Success'\", function () {",
+									"    pm.expect(parse.find('ReturnMessage').text()).to.equal(\"SUCCESS\");",
+									"});",
+									"",
+									"//pm.test(\"Return Status is 31\", function () {",
+									"//    pm.expect(parse.find('ReturnStatus').text()).to.equal(\"31\");",
+									"//});",
+									"",
+									"//pm.test(\"Return Message is 'CARDNO NOT FOUND'\", function () {",
+									"    //pm.expect(parse.find('ReturnMessage').text()).to.equal(\"CARDNO NOT FOUND\");",
+									"//});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "text/xml; charset=utf-8"
+							},
+							{
+								"key": "SOAPAction",
+								"type": "text",
+								"value": "http://MatrixSVAPIs/XMLCommand"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Header>\r\n    <SOAPAuthHeader xmlns=\"http://MatrixSVAPIs/\">\r\n      <strUserName>{{user_b64}}</strUserName>\r\n      <strPassword>{{pwd_b64}}</strPassword>\r\n    </SOAPAuthHeader>\r\n  </soap:Header>\r\n  <soap:Body>\r\n  \t<XMLCommand xmlns=\"http://MatrixSVAPIs/\">\r\n      <requestXML><![CDATA[{{reqToEncode}}]]></requestXML>\r\n      <chkSum>{{checkSum}}</chkSum>\r\n    </XMLCommand>\r\n  </soap:Body>\r\n</soap:Envelope>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_sv}}",
+							"host": [
+								"{{url_sv}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Cleanup response text",
+							"var responsexml = pm.response.text().replace(/&gt;/g,\">\").replace(/&lt;/g,\"<\");",
+							"console.log(responsexml);",
+							"parse = cheerio(responsexml);"
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"user_string = data.user_string",
+					"pwd_string = data.pwd_string",
+					"",
+					"user_b64 = btoa(user_string);",
+					"pwd_b64 = btoa(pwd_string);",
+					"",
+					"pm.environment.set(\"user_b64\", user_b64);",
+					"pm.environment.set(\"pwd_b64\", pwd_b64);",
+					"",
+					"// Get datetime",
+					"var moment = require('moment')",
+					"//var timestamp_full = moment().format(\"YYYY-MM-DDTHH:mm:ss\");",
+					"var timestamp = moment().format(\"YYYY-MM-DD\");",
+					"var timestamp_run = moment().format(\"YYYYMMDDhhmm\");",
+					"//var timestamp_future = moment().add(5,'d').format(\"YYYY-MM-DD\");",
+					"//var timestamp_past = moment().subtract(5,'d').format(\"YYYY-MM-DD\");",
+					"//var timestamp_3mos = moment().add(90,'d').format(\"YYYY-MM-DD\");",
+					"var month_day = moment().format(\"MM-DD\");",
+					"//pm.environment.set(\"timestamp_full\", timestamp_full);",
+					"pm.environment.set(\"timestamp\", timestamp);",
+					"pm.environment.set(\"timestamp_run\", timestamp_run);",
+					"//pm.environment.set(\"timestamp_future\", timestamp_future);",
+					"//pm.environment.set(\"timestamp_past\", timestamp_past);",
+					"//pm.environment.set(\"timestamp_3mos\", timestamp_3mos);",
+					"pm.environment.set(\"month_day\", month_day)"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
